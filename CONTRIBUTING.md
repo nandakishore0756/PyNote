@@ -154,6 +154,89 @@ Example:
 - ✅ No regressions introduced
 - ✅ Documentation updated
 
+## 🔍 Code Review Guidelines
+
+Code reviews ensure quality and consistency. Follow these guidelines:
+
+### For Reviewers:
+- Be constructive and respectful
+- Focus on code quality, not personal preferences
+- Suggest improvements, don't dictate
+- Approve when criteria are met
+- Request changes with clear explanations
+
+### For Contributors:
+- Address all review comments
+- Explain complex changes when needed
+- Don't take feedback personally
+- Iterate on feedback
+
+### Review Checklist:
+- [ ] Code follows style guidelines
+- [ ] Logic is sound and efficient
+- [ ] Tests are included/updated
+- [ ] Documentation is updated
+- [ ] No security vulnerabilities
+- [ ] Performance impact considered
+
+## 🔒 Security
+
+If you discover a security vulnerability:
+
+1. **Do not** create a public issue
+2. Email maintainers directly at [security@pynote.dev](mailto:security@pynote.dev)
+3. Include detailed steps to reproduce
+4. Allow time for fix before public disclosure
+
+## 🤝 Community Guidelines
+
+- Be respectful and inclusive
+- Use welcoming language
+- Focus on constructive feedback
+- Respect differing viewpoints
+- Help newcomers learn
+
+## 🧪 Advanced Testing
+
+Beyond basic testing:
+
+### Unit Tests:
+```bash
+pytest tests/test_utils.py -v
+```
+
+### Integration Tests:
+- Test full workflows end-to-end
+- Verify file operations work correctly
+- Check UI interactions
+
+### Performance Testing:
+- Monitor memory usage for large files
+- Test startup time
+- Verify responsiveness
+
+## ⚡ Performance Considerations
+
+- Optimize file operations for large documents
+- Minimize UI redraws
+- Use efficient data structures
+- Profile code for bottlenecks
+
+## 📚 Resources
+
+- [Python PEP 8 Style Guide](https://pep8.org/)
+- [PyQt Documentation](https://doc.qt.io/qtforpython/)
+- [Git Best Practices](https://git-scm.com/book/en/v2)
+- [Conventional Commits](https://conventionalcommits.org/)
+
+## 🚀 Release Process
+
+1. **Version Bumping**: Update version in `__init__.py`
+2. **Changelog**: Document changes in `CHANGELOG.md`
+3. **Testing**: Run full test suite
+4. **Build**: Create distributable packages
+5. **Tag**: Create git tag with version
+6. **Publish**: Upload to PyPI
 
 ## ❓ Questions?
 
