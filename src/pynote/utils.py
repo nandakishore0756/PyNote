@@ -99,10 +99,10 @@ def count_chars(text):
 def detect_encoding(filepath):
     """
     Detect file encoding (basic implementation).
-    
+
     Args:
         filepath: Path to file
-    
+
     Returns:
         str: Encoding name (defaults to 'utf-8')
     """
@@ -119,4 +119,26 @@ def detect_encoding(filepath):
             return 'latin-1'
         except Exception:
             return 'utf-8'
+
+
+def search_files(query, directory, file_extensions=None):
+    results = []
+    query_lower = query.lower()
+
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file_extensions and not any(file.endswith(ext) for ext in file_extensions):
+                continue
+
+            filepath = os.path.join(root, file)
+            try:
+                encoding = detect_encoding(filepath)
+                with open(filepath, 'r', encoding=encoding) as f:
+                    for line_num, line in enumerate(f, 1):
+                        if query_lower in line.lower():
+                            results.append((filepath, line_num, line.strip()))
+            except Exception:
+                # Skip files that can't be read
+                continue
+    return results
 
