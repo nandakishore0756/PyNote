@@ -6,3 +6,10 @@
 - [x] Update editor.py to highlight search results in the text widget
 - [x] Integrate search functionality: open search dialog, perform search, display results
 - [x] Test the search functionality across sample files
+
+# TODO: Implement Syntax-Aware Autocomplete
+
+- [x] Add jedi library to requirements.txt
+- [x] Extend EditorWidget class in editor.py with autocomplete functionality
+- [x] Integrate EditorWidget into main.py instead of raw Text widget
+- [x] Test autocomplete feature with Python code

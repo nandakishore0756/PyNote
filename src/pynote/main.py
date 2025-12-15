@@ -49,8 +49,8 @@ class PyNoteApp(tk.Tk):
         self.bind('<Control-s>', lambda e: self.save_file())
         self.bind('<Control-o>', lambda e: self.open_file())
         self.bind('<Control-n>', lambda e: self.new_file())
-        self.bind('<Control-z>', lambda e: self.text.event_generate('<<Undo>>'))
-        self.bind('<Control-y>', lambda e: self.text.event_generate('<<Redo>>'))
+        self.bind('<Control-z>', lambda e: self.editor.text.event_generate('<<Undo>>'))
+        self.bind('<Control-y>', lambda e: self.editor.text.event_generate('<<Redo>>'))
 
     def new_file(self):
         if self._confirm_discard():
