@@ -5,7 +5,9 @@ Editor widget wrapper for PyNote.
 
 import tkinter as tk
 from tkinter import ttk
-import jedi
+from .lsp_client import LSPClient
+import os
+import urllib.parse
 
 
 class EditorWidget:
@@ -13,18 +15,25 @@ class EditorWidget:
     Wrapper around Tkinter Text widget with additional functionality.
     """
 
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent, language='python', **kwargs):
         """
         Initialize editor widget.
 
         Args:
             parent: Parent widget
+            language: Language for LSP (e.g., 'python', 'javascript', 'html')
             **kwargs: Additional arguments for Text widget
         """
         self.parent = parent
+        self.language = language
         self.text = tk.Text(parent, wrap='word', undo=True, **kwargs)
         self.scrollbar = ttk.Scrollbar(parent, orient='vertical', command=self.text.yview)
         self.text.configure(yscrollcommand=self.scrollbar.set)
+
+        # LSP client
+        self.lsp_client = None
+        self.document_uri = f'file://{os.getcwd()}/temp_file'  # Placeholder URI
+        self.document_version = 1
 
         # Autocomplete variables
         self.autocomplete_listbox = None
@@ -48,6 +57,32 @@ class EditorWidget:
         """Set text content."""
         self.text.delete('1.0', tk.END)
         self.text.insert('1.0', content)
+        # Notify LSP client of document change
+        if self.lsp_client:
+            self.document_version += 1
+            self.lsp_client.text_document_did_change(self.document_uri, content, self.document_version)
+
+    def initialize_lsp_client(self):
+        """Initialize the LSP client for the specified language."""
+        if self.language == 'python':
+            server_command = ['pylsp']
+        elif self.language == 'javascript':
+            server_command = ['typescript-language-server', '--stdio']
+        elif self.language == 'html':
+            server_command = ['html-languageserver', '--stdio']
+        else:
+            return  # No LSP support for this language
+
+        try:
+            self.lsp_client = LSPClient(server_command)
+            root_uri = f'file://{os.getcwd()}'
+            self.lsp_client.initialize(root_uri)
+            # Open the document
+            content = self.get_content()
+            self.lsp_client.text_document_did_open(self.document_uri, self.language, content, self.document_version)
+        except Exception as e:
+            print(f"Failed to initialize LSP client: {e}")
+            self.lsp_client = None
 
     def get_cursor_position(self):
         """Get current cursor position as (line, column)."""
@@ -81,16 +116,21 @@ class EditorWidget:
 
     def _show_autocomplete(self):
         """Show autocomplete suggestions."""
+        if not self.lsp_client:
+            self._hide_autocomplete_list()
+            return
+
         cursor_pos = self.get_cursor_position()
-        content = self.get_content()
+        # LSP uses 0-based line and column
+        response = self.lsp_client.text_document_completion(self.document_uri, cursor_pos[0] - 1, cursor_pos[1])
 
-        # Use jedi for completions
-        script = jedi.Script(code=content, line=cursor_pos[0], column=cursor_pos[1])
-        completions = script.complete()
-
-        if completions:
-            self.autocomplete_suggestions = [c.name for c in completions]
-            self._display_autocomplete_list()
+        if response and 'result' in response:
+            items = response['result'].get('items', [])
+            self.autocomplete_suggestions = [item['label'] for item in items]
+            if self.autocomplete_suggestions:
+                self._display_autocomplete_list()
+            else:
+                self._hide_autocomplete_list()
         else:
             self._hide_autocomplete_list()
 

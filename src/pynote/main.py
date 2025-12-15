@@ -1,6 +1,7 @@
 # src/pynote/main.py
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
+from .editor import EditorWidget
 
 APP_TITLE = "PyNote"
 
@@ -16,12 +17,12 @@ class PyNoteApp(tk.Tk):
         self._bind_shortcuts()
 
     def _create_widgets(self):
-        # Text widget with scrollbar
-        self.text = tk.Text(self, wrap='word', undo=True)
-        self.vsb = ttk.Scrollbar(self, orient='vertical', command=self.text.yview)
-        self.text.configure(yscrollcommand=self.vsb.set)
-        self.vsb.pack(side='right', fill='y')
-        self.text.pack(side='left', fill='both', expand=True)
+        # Editor widget with LSP support
+        self.editor = EditorWidget(self, language='python')
+        self.editor.pack()
+
+        # Initialize LSP client
+        self.editor.initialize_lsp_client()
 
         # status bar
         self.status = tk.StringVar()
@@ -30,8 +31,8 @@ class PyNoteApp(tk.Tk):
         status_bar.pack(side='bottom', fill='x')
 
         # update cursor position
-        self.text.bind('<KeyRelease>', self._update_status)
-        self.text.bind('<ButtonRelease>', self._update_status)
+        self.editor.text.bind('<KeyRelease>', self._update_status)
+        self.editor.text.bind('<ButtonRelease>', self._update_status)
 
     def _create_menu(self):
         menu = tk.Menu(self)
@@ -54,7 +55,7 @@ class PyNoteApp(tk.Tk):
 
     def new_file(self):
         if self._confirm_discard():
-            self.text.delete('1.0', tk.END)
+            self.editor.set_content('')
             self._filepath = None
             self.title(APP_TITLE)
 
@@ -68,19 +69,17 @@ class PyNoteApp(tk.Tk):
             try:
                 with open(path, 'r', encoding='utf-8') as f:
                     data = f.read()
-                self.text.delete('1.0', tk.END)
-                self.text.insert('1.0', data)
+                self.editor.set_content(data)
                 self._filepath = path
                 self.title(f"{APP_TITLE} - {path}")
             except Exception as e:
-                messagebox.showerror('Error', f'Failed to open file: {str(e)}')
 
     def save_file(self):
         if self._filepath:
             try:
                 with open(self._filepath, 'w', encoding='utf-8') as f:
-                    f.write(self.text.get('1.0', tk.END))
-                self.text.edit_modified(False)
+                    f.write(self.editor.get_content())
+                self.editor.text.edit_modified(False)
                 messagebox.showinfo('Saved', 'File saved successfully')
             except Exception as e:
                 messagebox.showerror('Error', f'Failed to save file: {str(e)}')
@@ -95,22 +94,22 @@ class PyNoteApp(tk.Tk):
         if path:
             try:
                 with open(path, 'w', encoding='utf-8') as f:
-                    f.write(self.text.get('1.0', tk.END))
+                    f.write(self.editor.get_content())
                 self._filepath = path
                 self.title(f"{APP_TITLE} - {path}")
-                self.text.edit_modified(False)
+                self.editor.text.edit_modified(False)
                 messagebox.showinfo('Saved', 'File saved successfully')
             except Exception as e:
                 messagebox.showerror('Error', f'Failed to save file: {str(e)}')
 
     def _update_status(self, event=None):
-        idx = self.text.index(tk.INSERT).split('.')
+        idx = self.editor.text.index(tk.INSERT).split('.')
         line = idx[0]
         col = idx[1]
         self.status.set(f'Ln {line}, Col {col}')
 
     def _confirm_discard(self):
-        if self.text.edit_modified():
+        if self.editor.text.edit_modified():
             resp = messagebox.askyesnocancel(
                 'Unsaved changes',
                 'You have unsaved changes. Save before continuing?'

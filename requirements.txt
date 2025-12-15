@@ -1,7 +1,10 @@
 # PyNote Requirements
 # Minimal dependencies for MVP
 
-jedi>=0.18.0              # For syntax-aware autocomplete
+# jedi>=0.18.0              # For syntax-aware autocomplete (replaced by LSP)
+
+# LSP dependencies
+python-lsp-server>=1.7.0  # For Python LSP server (pylsp)
 
 # Optional dependencies (uncomment as needed)
 # pyspellchecker>=0.6.2   # For spell checking feature
