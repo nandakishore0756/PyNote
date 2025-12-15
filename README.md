@@ -22,6 +22,23 @@
 * ✅ Light / Dark theme toggle
 * ✅ Autosave (configurable)
 
+## Theming and Configuration
+* Apply themes from themes.py in main.py
+* Add theme switching menu option
+* Utilize settings system from utils.py for user preferences
+
+## Feature Enhancements
+* Add line numbers to EditorWidget
+* Implement autosave functionality
+* Improve status bar with word count, character count, and file encoding
+
+## Code Quality Improvements
+* Add type hints throughout the codebase
+* Enhance error handling with specific exceptions and user-friendly messages
+* Add comprehensive docstrings to all classes and methods
+* Use constants for magic numbers and strings
+* Implement logging for debugging
+
 ## 🚀 Nice-to-Have Features (Stretch)
 
 * Tabbed editing (multiple files)
@@ -89,14 +106,14 @@ PyNote/
 ├── tests/
 │   └── test_utils.py
 ├── examples/
-│   └── example.md
+│   └── example.md/
 ├── CONTRIBUTING.md
 ├── README.md
 ├── LICENSE
 └── requirements.txt
 ```
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
@@ -104,7 +121,7 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 * Check the [ROADMAP.md](docs/ROADMAP.md) for project milestones
 * All PRs should reference an issue
 
-## 🗺️ Roadmap
+## Roadmap
 
 See [docs/ROADMAP.md](docs/ROADMAP.md) for detailed milestones:
 
@@ -113,15 +130,15 @@ See [docs/ROADMAP.md](docs/ROADMAP.md) for detailed milestones:
 * `v0.3 - Power features` (tabs, find/replace, syntax highlighting)
 * `v1.0 - Release` (stable, docs, tests)
 
-## 🐛 Reporting Issues
+## Reporting Issues
 
 Found a bug or have a feature request? Please use our [issue templates](.github/ISSUE_TEMPLATE/)!
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
+
 
 **Happy Coding! 🎉**
 
